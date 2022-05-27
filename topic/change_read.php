@@ -1,15 +1,10 @@
+<!-- 一覧画面 -->
 <?php
-// DB接続
-$dbn ='mysql:dbname=gif_lo07_task;charset=utf8mb4;port=3306;host=localhost';
-$user = 'root';
-$pwd = '';
+// 階層１つ上を取得　dirname(__FILE__).' /../'**** '
+include(dirname(__FILE__).'/../function.php');
 
-try {
-  $pdo = new PDO($dbn, $user, $pwd);
-} catch (PDOException $e) {
-  echo json_encode(["db error" => "{$e->getMessage()}"]);
-  exit();
-}
+// DB接続
+$pdo = connect_to_task_db();
 
 // SQL作成&実行
 // SQL文の記述 作成はINSERT、読み込みはSELECT *:全部 後ろにソート付けるやカラム指定OK
@@ -20,19 +15,36 @@ $stmt = $pdo->prepare($sql);
 try {
     $status = $stmt->execute();
     $result = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+      // echo'<pre>';
+      // var_dump($result);
+      // echo'</pre>';
+
     $output = "";
+    // substr( 文字列, 開始位置, 文字数 )ここからー！！
 
     foreach($result as $record) {
+
+      // $output_title .="
+      //  {$record["title"]}
+      // "
+
+      //aタグでidを元に、編集と削除へのリンクを作成しておくこと.URLにidを仕込んでおく
       $output .= "
       <tr>
         <td>{$record["title"]}</td>
-        <td>{$record["text"]}</td>
+        <td>{substr($record[text],0,10)}</td>
+        <td>
+          <a href='change_edit.php?id={$record["article_id"]}'> edit </a>
+        </td>
+        <td>
+          <a href='change_delete.php?id={$record["article_id"]}'> delete </a>
+        </td>
       </tr>
       ";}
     } catch (PDOException $e) {
       echo json_encode(["sql error" => "{$e->getMessage()}"]);
       exit();
-    }
+    } 
 ?>
 
 <!DOCTYPE html>
@@ -43,11 +55,75 @@ try {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JobChange</title>
 </head>
+<style>
+    h1 {
+      position: relative;
+      padding: 1em 2em;
+      text-align: center;
+    }
+
+    h1:before,
+    h1:after {
+      position: absolute;
+      content: '';
+    }
+
+    h1:after {
+      top: 0;
+      left: 300px;
+      width: 50px;
+      height: 50px;
+      border-top: 2px solid #000;
+      border-left: 2px solid #000;
+    }
+
+    h1:before {
+      right: 300px;
+      bottom: 0;
+      width: 50px;
+      height: 50px;
+      border-right: 2px solid #000;
+      border-bottom: 2px solid #000;
+    }
+
+    .input_area{
+      margin: 50px 10px;
+    }
+
+    .head_h1{
+     max-width: 600px;    /* 線の大きさmaxを指定 */
+    }
+    .head_test {
+        
+        margin:  0;             /* デフォルトCSS打ち消し */
+        font-size:  24px;       /* 文字サイズ指定 */
+        border-bottom:  solid;  /* 線指定 */
+        /* display: inline-block; 文字の分だけ線の長さ？*/
+        padding-bottom:  5px;   /* 余白指定 */
+        margin-bottom: 15px;    /* 周りの余白指定 */
+        padding-left: 5%;
+    }
+    p {
+        margin:  0;             /* デフォルトCSS打ち消し */
+        line-height: 2;         /* 行間調整 */
+    }
+</style>
 <body>
   <table>
     <thead>
       <h1>転職記事</h1>
-      <a href="change_input.php">入力画面</a>
+
+      <div class=input_area>
+        <a href="change_input.php">入力画面</a>
+      </div>
+
+      <div class=head_h1>
+        <h2 class=head_test>TITLE <?=$output_title ?></h2>
+      </div>
+      <p>
+        テスト
+
+      </p>
       <tr>
         <th>title</th>
         <th>text</th>
@@ -58,4 +134,4 @@ try {
     </thead>
   </table>
 </body>
-</html>
+</html> 

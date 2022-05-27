@@ -1,5 +1,7 @@
 <!-- inputからデータを受け取り、DBへの新規データを作成 -->
 <?php 
+include('function.php');
+
 // 入力ない場合、取得できなかったら、エラー
 if(
   !isset($_POST['topic']) || $_POST['topic'] == '' ||
@@ -13,17 +15,7 @@ $keyword = $_POST['keyword'];
 
 
 //DB接続　 各種項目設定
-$dbn ='mysql:dbname=gif_lo07_task;charset=utf8mb4;port=3306;host=localhost';
-$user = 'root';
-$pwd = '';
-
-// DB接続
-try {
-  $pdo = new PDO($dbn, $user, $pwd);
-} catch (PDOException $e) {
-  echo json_encode(["db error" => "{$e->getMessage()}"]);
-  exit();
-}
+$pdo = connect_to_task_db();
 
 // 「dbError:...」が表示されたらdb接続でエラーが発生していることがわかる．
 
@@ -36,6 +28,7 @@ $stmt = $pdo->prepare($sql);
 $stmt->bindValue(':topic', $topic, PDO::PARAM_STR); //数字の時はinteger PDO::PARAM_INT,受け取る値によって変更.
 $stmt->bindValue(':keyword', $keyword, PDO::PARAM_STR);
 
+
 // SQL実行（実行に失敗すると `sql error ...` が出力される）
 try {
   $status = $stmt->execute(); //executeで実行
@@ -43,7 +36,6 @@ try {
   echo json_encode(["sql error" => "{$e->getMessage()}"]);
   exit();
 }
-
 
 // SQL実行時の処理
 header('Location: topic_input.php');

@@ -1,19 +1,13 @@
+<!-- 一覧画面 -->
 <?php
 // DB接続
-$dbn ='mysql:dbname=gif_lo07_task;charset=utf8mb4;port=3306;host=localhost';
-$user = 'root';
-$pwd = '';
-
-try {
-  $pdo = new PDO($dbn, $user, $pwd);
-} catch (PDOException $e) {
-  echo json_encode(["db error" => "{$e->getMessage()}"]);
-  exit();
-}
+include('function.php');
+$pdo = connect_to_task_db();
 // ここまでOK
 
 // SQL作成＆実行
 $sql = 'SELECT * FROM topic_table';
+// $sql = 'SELECT topic, FROM topic_table ' ;
 $stmt = $pdo->prepare($sql);
 
 try {
@@ -35,21 +29,29 @@ $output_topic = "";
 $output_key = "";
 // 繰り返し処理で結果を変数に入れる
 foreach ($result as $record) {
+  // 繰り返しボタンを作成
   $output_topic .= "
-      {$record["topic"]}
-  ";
+  <tr>
+    <button onclick=location.href='./topic/change_read.php'>{$record["topic"]}</button>
+    
+    <td><a href='topic_edit.php?id={$record["id"]}'> edit </a></td>
+    <td><a href='topic_delete.php?id={$record["id"]}'> delete </a></td>
+  </tr><br>  
+  <br>
+    ";
 }{
   $output_key .="
   {$record["keyword"]}
   ";
 }
 //  echo'<pre>';
-//  var_dump($output_topic);
+//  var_dump($record["keyword"]);
 //  echo'</pre>';
 // exit();
 // ここまでOK
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -59,17 +61,17 @@ foreach ($result as $record) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Topic一覧</title>
 </head>
-<body>
-  <a href="topic_input.php">入力画面</a>
 
-  <input type="button" onclick="topic_new()" value="topic新規作成ページへ" />
+<body>
+  <!-- <a href="topic_input.php">入力画面</a> -->
+
+  <input type="button" onclick="location.href='./topic_input.php'" value="topic新規作成ページへ" />
   <div>
     <h1>topicから選んでください</h1>
     <div>
-      <button type="button" onclick="location.href='./topic/change_read.php'"><?=$output_topic?></button>
-      <!-- <p id="output"></p> -->
-      <!-- <p id= "outputBtn"><?=$output_topic?></p> -->
-     
+      <?= $output_topic?>
+      <!-- <button type="button" onclick="location.href='./topic/change_read.php'"><?=$output_topic?>$output_topic</button> -->
+      
       <!-- <p onClick="location.href= './topic/{$keyOutput}'"></p> -->
 
     </div>
