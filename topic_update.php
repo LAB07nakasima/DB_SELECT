@@ -2,6 +2,8 @@
 <!-- editしたものを受け取ってDBに変更内容送ってる　見えてない部分 -->
 <?php
 include('function.php');
+session_start();
+check_session_id();
 $pdo = connect_to_task_db();
 
  if(

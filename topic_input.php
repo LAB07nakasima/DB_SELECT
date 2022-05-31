@@ -1,4 +1,9 @@
 <!-- ここで入力　入力データcreate.phpへ送信 -->
+<?php
+session_start();
+$output = $_SESSION['username'];
+$uname = "<p>ユーザー名：".$_SESSION['username']."</p>";
+?>
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -13,6 +18,10 @@
   <form action="topic_create.php" method="POST">
     <fieldset>
       <legend>DB連携topicリスト(入力フォーム)</legend>
+      <?= $uname?>
+      <div>
+        username: <?= $output?>
+      </div>
       <div>
         topic: <input type="text" name="topic">
       </div>

@@ -1,6 +1,8 @@
 <!-- inputからデータを受け取り、DBへの新規データを作成 -->
 <?php 
 include('function.php');
+session_start();
+check_session_id();
 
 // 入力ない場合、取得できなかったら、エラー
 if(

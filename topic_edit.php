@@ -1,6 +1,9 @@
 <!--編集画面の作成 -->
 <?php 
 include('function.php');
+session_start();
+$uname = "<p>ユーザー名：".$_SESSION['username']."</p>";
+// check_session_id();
 
 // id受け取り
 $id = $_GET['id'];
@@ -39,6 +42,7 @@ try {
 <body>
   <form action="topic_update.php" method="POST">
     <fieldset>
+      <?= $uname?>
       <legend>TOPIC編集画面</legend>
       <a href="topic_read.php">一覧画面</a>
       <div>

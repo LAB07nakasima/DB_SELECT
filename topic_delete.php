@@ -2,7 +2,9 @@
 <?php
 $id = $_GET['id'];
 
-include('function_php');
+include('function.php');
+session_start();
+check_session_id();
 $pdo = connect_to_task_db();
 // SQL実行
 $sql = 'DELETE FROM topic_table WHERE id=:id';

@@ -2,8 +2,12 @@
 <?php
 // DB接続
 include('function.php');
+session_start();
+// check_session_id();
 $pdo = connect_to_task_db();
-// ここまでOK
+  // echo('OK');
+  // exit();
+  // ここまでOK
 
 // SQL作成＆実行
 $sql = 'SELECT * FROM topic_table';
@@ -44,11 +48,31 @@ foreach ($result as $record) {
   {$record["keyword"]}
   ";
 }
-//  echo'<pre>';
-//  var_dump($record["keyword"]);
-//  echo'</pre>';
-// exit();
-// ここまでOK
+  //  echo'<pre>';
+  //  var_dump($record["keyword"]);
+  //  echo'</pre>';
+  // exit();
+  // ここまでOK
+
+$uname = "<p>ユーザー名：".$_SESSION['username']."</p>";
+
+$keyword = "job_change";
+
+$view ="";
+if($status == false){
+  $error = $stmt -> errorInfo();
+  exit("ErrorQuery:".$error[2]);
+
+}else{
+  while($result = $stmt->fetch(PDO::FETCH_ASSOC)){
+    $view .= "<p>";
+    $view .= '<a href='.$result["keyword"].'php>';
+    $view .= "</a>";
+    $view .= "</p>";
+    $view .= "[リンク]";
+  }
+}
+
 
 ?>
 
@@ -64,6 +88,7 @@ foreach ($result as $record) {
 
 <body>
   <!-- <a href="topic_input.php">入力画面</a> -->
+  <?= $uname?>
 
   <input type="button" onclick="location.href='./topic_input.php'" value="topic新規作成ページへ" />
   <div>
@@ -74,6 +99,10 @@ foreach ($result as $record) {
       
       <!-- <p onClick="location.href= './topic/{$keyOutput}'"></p> -->
 
+    </div>
+    <div>
+      <?= $view?>
+      
     </div>
   </div>
   <script>

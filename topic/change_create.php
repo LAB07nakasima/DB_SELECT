@@ -1,5 +1,7 @@
 <?php
 include(dirname(__FILE__).'/../function.php');
+session_start();
+check_session_id();
 
 // 入力チェック
 if(

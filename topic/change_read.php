@@ -2,12 +2,14 @@
 <?php
 // 階層１つ上を取得　dirname(__FILE__).' /../'**** '
 include(dirname(__FILE__).'/../function.php');
+session_start();
+$uname = "<p>ユーザー名：".$_SESSION['username']."</p>";
 
 // DB接続
 $pdo = connect_to_task_db();
 
 // SQL作成&実行
-// SQL文の記述 作成はINSERT、読み込みはSELECT *:全部 後ろにソート付けるやカラム指定OK
+// SQL文の記述 作成はINSERT、読み込みはSELECT *:全部 後ろにソート付けるやカラム指定OK WHERE keyword
 $sql = 'SELECT * FROM job_change';
 $stmt = $pdo->prepare($sql);
 
@@ -19,20 +21,26 @@ try {
       // var_dump($result);
       // echo'</pre>';
 
-    $output = "";
-    // substr( 文字列, 開始位置, 文字数 )ここからー！！
+    // $output = "";
+    // $output_text ="";
+    // $output_title ="";
+    
 
     foreach($result as $record) {
 
-      // $output_title .="
-      //  {$record["title"]}
-      // "
+      $output_text .=
+      // mb_substr( 文字列, 開始位置, 文字数 ) 文字の指定
+      mb_substr("{$record['text']}", 0,15);
 
+      $output_title .=
+       $record["title"];
+    
+      //  <td>{$output_text}</td>
       //aタグでidを元に、編集と削除へのリンクを作成しておくこと.URLにidを仕込んでおく
       $output .= "
       <tr>
         <td>{$record["title"]}</td>
-        <td>{substr($record[text],0,10)}</td>
+         
         <td>
           <a href='change_edit.php?id={$record["article_id"]}'> edit </a>
         </td>
@@ -106,10 +114,15 @@ try {
     p {
         margin:  0;             /* デフォルトCSS打ち消し */
         line-height: 2;         /* 行間調整 */
+      }
+    .contents_text{
+      font-size: 20px;
     }
+   
 </style>
 <body>
   <table>
+    <?= $uname?>
     <thead>
       <h1>転職記事</h1>
 
@@ -120,10 +133,11 @@ try {
       <div class=head_h1>
         <h2 class=head_test>TITLE <?=$output_title ?></h2>
       </div>
-      <p>
-        テスト
-
+      <p class=contents_text>
+        記事内容
+        <?= $output_text?>
       </p>
+      <br>
       <tr>
         <th>title</th>
         <th>text</th>
