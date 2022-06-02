@@ -40,6 +40,8 @@ if(!$val){
   $_SESSION = array();
   // セッションidを取得
   $_SESSION['session_id'] = session_id();
+  //user_idを ログイン時にセッションidに保存
+  $_SESSION['user_id'] = $val['id'];
   $_SESSION['is_admin'] = $val['is_admin'];
   $_SESSION['username'] = $val['username'];
   header("Location: ../topic_read.php");
