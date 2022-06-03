@@ -44,8 +44,14 @@ if(!$val){
   $_SESSION['user_id'] = $val['id'];
   $_SESSION['is_admin'] = $val['is_admin'];
   $_SESSION['username'] = $val['username'];
-  header("Location: ../topic_read.php");
-  exit();
+
+  // if ($val['is_admin'] == 1)
+  //   header("Location: user_create.php");
+  //   exit()
+  // else{
+    header("Location: ../topic_read.php");
+  //   exit();
+  // }
 }
 
 // データを存在したらセッション変数にidやユーザーデータを入れて画面に映る
